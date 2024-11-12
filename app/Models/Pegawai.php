@@ -9,5 +9,10 @@ class Pegawai extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'email', 'no_telepon'];
+    protected $fillable = ['nama', 'email', 'no_telepon', 'alamat'];
+
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class);
+    }
 }

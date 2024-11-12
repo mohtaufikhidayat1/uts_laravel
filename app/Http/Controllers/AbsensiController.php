@@ -1,3 +1,7 @@
+<?php
+
+namespace App\Http\Controllers;
+
 use App\Models\Absensi;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
@@ -6,30 +10,60 @@ class AbsensiController extends Controller
 {
     public function index()
     {
-        return Absensi::with('pegawai')->get();
+        $absensis = Absensi::with('pegawai')->get();
+        return view('absensis.index', compact('absensis'));
+    }
+
+    public function create()
+    {
+        $pegawais = Pegawai::all();
+        return view('absensis.create', compact('pegawais'));
     }
 
     public function store(Request $request)
     {
-        $absensi = Absensi::create($request->all());
-        return response()->json($absensi, 201);
+        $request->validate([
+            'pegawai_id' => 'required|exists:pegawais,id',
+            'shift' => 'required',
+            'absensi_masuk' => 'nullable|date',
+            'absensi_keluar' => 'nullable|date',
+            'mulai_istirahat' => 'nullable|date',
+            'selesai_istirahat' => 'nullable|date',
+        ]);
+
+        Absensi::create($request->all());
+        return redirect()->route('absensis.index');
     }
 
-    public function show($id)
+    public function show(Absensi $absensi)
     {
-        return Absensi::with('pegawai')->findOrFail($id);
+        return view('absensis.show', compact('absensi'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(Absensi $absensi)
     {
-        $absensi = Absensi::findOrFail($id);
+        $pegawais = Pegawai::all();
+        return view('absensis.edit', compact('absensi', 'pegawais'));
+    }
+
+    public function update(Request $request, Absensi $absensi)
+    {
+        $request->validate([
+            'pegawai_id' => 'required|exists:pegawais,id',
+            'shift' => 'required',
+            'absensi_masuk' => 'nullable|date',
+            'absensi_keluar' => 'nullable|date',
+            'mulai_istirahat' => 'nullable|date',
+            'selesai_istirahat' => 'nullable|date',
+        ]);
+
         $absensi->update($request->all());
-        return response()->json($absensi, 200);
+        return redirect()->route('absensis.index');
     }
 
-    public function destroy($id)
+    public function destroy(Absensi $absensi)
     {
-        Absensi::findOrFail($id)->delete();
-        return response()->json(null, 204);
+        $absensi->delete();
+        return redirect()->route('absensis.index');
     }
 }

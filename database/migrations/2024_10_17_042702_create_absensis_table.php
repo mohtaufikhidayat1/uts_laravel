@@ -4,28 +4,25 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateAbsensisTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('absensis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pegawai_id')->constrained('pegawais');
-            $table->date('tanggal');
-            $table->time('jam_masuk');
-            $table->time('jam_keluar')->nullable();
+            $table->foreignId('pegawai_id')->constrained('pegawais')->onDelete('cascade');
+            $table->string('shift');
+            $table->timestamp('absensi_masuk')->nullable();
+            $table->timestamp('absensi_keluar')->nullable();
+            $table->timestamp('mulai_istirahat')->nullable();
+            $table->timestamp('selesai_istirahat')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('absensis');
     }
-};
+}
+

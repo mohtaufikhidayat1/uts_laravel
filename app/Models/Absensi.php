@@ -1,11 +1,18 @@
-// Pegawai.php
-public function absensi()
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Absensi extends Model
 {
-    return $this->hasMany(Absensi::class);
+    use HasFactory;
+
+    protected $fillable = ['pegawai_id', 'shift', 'absensi_masuk', 'absensi_keluar', 'mulai_istirahat', 'selesai_istirahat'];
+    public function pegawai()
+    {
+        return $this->belongsTo(Pegawai::class);
+    }
 }
 
-// Absensi.php
-public function pegawai()
-{
-    return $this->belongsTo(Pegawai::class);
-}
